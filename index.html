@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invitación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500;1,9..144,700&family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2b1d1a; --muted:#8a7670; --line:#f0dcd2;
+    --card:#fffdfb; --rose:#e5395f; --rose-d:#c22149;
+    --peach:#ffe3d3; --wa:#1fa855; --wa-d:#168a44;
+    --sad:#5b6b82;
+  }
+  *{box-sizing:border-box}
+  html{min-height:100%}
+  body{margin:0}
+  body{
+    font-family:"Nunito",system-ui,sans-serif;color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #ffd6e0 0%, transparent 60%),
+      radial-gradient(900px 600px at 110% 110%, #ffe0c2 0%, transparent 55%),
+      #fff4ec;
+    min-height:100%;overflow-x:hidden;
+    transition:background .8s;
+  }
+  body.sad{background:linear-gradient(#c9d3e0,#e7ebf1);}
+  .view{display:none;min-height:100vh;padding:28px 18px 60px;align-items:center;justify-content:center;flex-direction:column}
+  .view.on{display:flex}
+  .card{
+    width:100%;max-width:520px;background:var(--card);border-radius:28px;
+    box-shadow:0 1px 0 #fff inset,0 30px 60px -30px rgba(120,40,40,.35),0 6px 18px -8px rgba(120,40,40,.15);
+    padding:34px 28px 30px;position:relative;
+  }
+  h1,h2{font-family:"Fraunces",Georgia,serif;font-weight:700;letter-spacing:-.02em;margin:0}
+  em{font-style:italic;color:var(--rose)}
+  .eyebrow{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);margin:0 0 10px}
+  .muted{color:var(--muted)}
+
+  /* ---------- Config ---------- */
+  #config h1{font-size:30px;line-height:1.1;margin-bottom:6px}
+  #config .sub{margin:0 0 24px;color:var(--muted)}
+  label{display:block;font-weight:800;font-size:14px;margin:18px 0 6px}
+  .hint{font-weight:600;font-size:12.5px;color:var(--muted);margin-top:5px}
+  input,textarea{
+    width:100%;font:inherit;font-size:16px;color:var(--ink);
+    border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff;outline:none;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  textarea{resize:vertical;min-height:76px}
+  input:focus,textarea:focus{border-color:var(--rose);box-shadow:0 0 0 4px rgba(229,57,95,.12)}
+  .err{color:var(--rose-d);font-size:13px;font-weight:700;min-height:18px;margin-top:6px}
+  .preview{margin-top:22px;background:#f4fbf6;border:1.5px dashed #bfe5cb;border-radius:16px;padding:14px 16px;font-size:14px;white-space:pre-wrap}
+  .preview b{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--wa-d);margin-bottom:6px}
+  .primary{
+    margin-top:24px;width:100%;border:0;border-radius:16px;padding:15px 18px;cursor:pointer;
+    font:800 17px "Nunito",sans-serif;color:#fff;background:var(--rose);
+    box-shadow:0 10px 20px -10px var(--rose);transition:transform .1s, background .15s;
+  }
+  .primary:hover{background:var(--rose-d)}
+  .primary:active{transform:scale(.98)}
+
+  /* ---------- Invitación ---------- */
+  #invite .card{text-align:center;padding-top:40px}
+  .envelope{font-size:44px;line-height:1;margin-bottom:12px;animation:bob 3s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-6px) rotate(-4deg)}}
+  #invite h1{font-size:clamp(32px,8vw,44px);line-height:1.05}
+  #invite .lead{font-size:18px;margin:14px 0 22px;color:var(--muted)}
+  .ticket{
+    position:relative;margin:0 auto 26px;max-width:400px;border-radius:18px;padding:18px 22px;
+    background:var(--peach);border:2px dashed #f6b79b;
+  }
+  .ticket small{display:block;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#c2603b;margin-bottom:6px}
+  .ticket p{margin:0;font-family:"Fraunces",serif;font-size:22px;line-height:1.25;font-weight:500}
+  .question{font-family:"Fraunces",serif;font-size:24px;margin:0 0 20px}
+  .row{display:flex;gap:16px;align-items:center;justify-content:center;min-height:90px;flex-wrap:wrap}
+  .btn{
+    font-family:"Nunito",sans-serif;font-weight:800;border:0;cursor:pointer;text-decoration:none;
+    border-radius:999px;display:inline-flex;align-items:center;justify-content:center;
+    user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;
+  }
+  .yes{
+    font-size:20px;padding:.55em 1.6em;color:#fff;background:var(--rose);
+    box-shadow:0 .5em 1.2em -.5em rgba(229,57,95,.8);
+    transition:font-size .25s cubic-bezier(.3,1.6,.5,1), background .15s;
+    animation:pulse 2.2s ease-in-out infinite;
+  }
+  .yes:hover{background:var(--rose-d)}
+  @keyframes pulse{50%{box-shadow:0 .5em 1.6em -.3em rgba(229,57,95,.9)}}
+  .no{
+    font-size:18px;padding:.55em 1.6em;color:var(--ink);background:#efe6e2;
+    transition:left .22s ease, top .22s ease, font-size .2s, opacity .3s, background .2s;
+    touch-action:none;position:relative;
+  }
+  .no.flying{position:fixed;z-index:20}
+  .no.tired{background:#e9e1dd;color:#9b8c87;cursor:pointer;animation:none}
+  .no.tired::after{content:"";position:absolute;inset:-7px}
+  .status{min-height:44px;margin:18px 0 0;font-size:14.5px;font-weight:700;color:var(--muted)}
+  .meter{display:none !important;height:5px;border-radius:5px;background:#f3e6e0;overflow:hidden;margin:10px auto 0;max-width:240px;opacity:0;transition:opacity .4s}
+  .meter.on{opacity:1}
+  .meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffb199,var(--rose));transition:width .25s}
+  .backpill{
+    position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:60;border:0;cursor:pointer;
+    background:rgba(43,29,26,.85);color:#fff;font:700 13px "Nunito",sans-serif;padding:9px 16px;border-radius:999px;
+    box-shadow:0 8px 20px -8px rgba(0,0,0,.4);
+  }
+  .backpill[hidden]{display:none}
+  .result{margin-top:24px;padding:18px;border-radius:18px;background:#fff6f1;border:1.5px solid var(--line);animation:up .3s ease}
+  @keyframes up{from{transform:translateY(12px);opacity:0}}
+  .result[hidden]{display:none}
+  .linkbox{display:flex;gap:8px}
+  .linkbox input{font-size:13.5px;padding:11px 12px;color:var(--muted);background:#fff}
+  .linkbox button{
+    flex:none;border:0;border-radius:12px;padding:0 18px;cursor:pointer;
+    font:800 15px "Nunito",sans-serif;color:#fff;background:var(--ink);transition:background .15s;
+  }
+  .linkbox button.ok{background:var(--wa)}
+  .result-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .ghost{
+    flex:1 1 140px;text-align:center;text-decoration:none;font:800 14px "Nunito",sans-serif;
+    padding:11px 12px;border-radius:12px;border:1.5px solid var(--line);color:var(--ink);background:#fff;
+  }
+  .ghost:hover{border-color:var(--rose);color:var(--rose)}
+  .wa-share{color:var(--wa-d);border-color:#bfe5cb}
+  .wa-share:hover{color:#fff;background:var(--wa);border-color:var(--wa)}
+  .floaters span{position:fixed;font-size:22px;opacity:.18;pointer-events:none;animation:float 14s linear infinite}
+  @keyframes float{from{transform:translateY(20vh) rotate(0)}to{transform:translateY(-110vh) rotate(40deg)}}
+
+  /* ---------- Sí ---------- */
+  #yesView .card{text-align:center}
+  .big-emoji{font-size:64px;line-height:1;margin-bottom:10px;animation:pop .6s cubic-bezier(.3,1.8,.5,1)}
+  @keyframes pop{from{transform:scale(.2)}}
+  #yesView h1{font-size:clamp(30px,8vw,42px);margin-bottom:12px}
+  .wa{
+    margin-top:22px;width:100%;padding:16px;border-radius:16px;font-size:18px;color:#fff;background:var(--wa);
+    box-shadow:0 12px 22px -12px var(--wa);gap:10px;
+  }
+  .wa:hover{background:var(--wa-d)}
+  .small{font-size:13px;color:var(--muted);margin-top:14px}
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
+
+  /* ---------- No ---------- */
+  #noView .card{text-align:center;background:#f7f9fc;box-shadow:0 30px 60px -30px rgba(40,60,90,.45)}
+  #noView h1{color:var(--sad);font-size:clamp(28px,7vw,38px);margin-bottom:6px}
+  .sadface{font-size:72px;line-height:1;position:relative;display:inline-block;margin-bottom:10px;animation:sway 3s ease-in-out infinite}
+  @keyframes sway{50%{transform:rotate(-6deg) translateY(3px)}}
+  .tear{position:absolute;left:28%;top:52%;width:9px;height:13px;background:#6fb3ff;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;animation:drip 1.6s ease-in infinite}
+  @keyframes drip{0%{opacity:0;transform:translateY(0)}20%{opacity:1}100%{opacity:0;transform:translateY(48px)}}
+  .reason{
+    margin:20px 0;padding:18px 20px;border-radius:16px;background:#fff;border-left:5px solid var(--sad);
+    text-align:left;font-family:"Fraunces",serif;font-size:20px;line-height:1.35;font-style:italic;
+  }
+  .reason small{display:block;font:800 11px "Nunito",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--sad);font-style:normal;margin-bottom:8px}
+  .rain i{position:fixed;top:-20px;width:2px;height:16px;background:rgba(90,110,140,.35);border-radius:2px;animation:rain linear infinite;pointer-events:none}
+  @keyframes rain{to{transform:translateY(110vh)}}
+  .regret{margin-top:6px;background:transparent;border:2px solid var(--rose);color:var(--rose);padding:12px 18px;border-radius:14px;font:800 15px "Nunito",sans-serif;cursor:pointer}
+  .regret:hover{background:var(--rose);color:#fff}
+
+  /* ---------- Selector de plantillas ---------- */
+  .tpls{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .tpl{margin:0;cursor:pointer;display:block;font-weight:700}
+  .tpl input{position:absolute;opacity:0;pointer-events:none}
+  .tpl-prev{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    height:96px;border-radius:14px;border:2px solid var(--line);transition:transform .15s, border-color .15s, box-shadow .15s;
+    position:relative;overflow:hidden;
+  }
+  .tpl:hover .tpl-prev{transform:translateY(-2px)}
+  .tpl input:checked + .tpl-prev{border-color:var(--rose);box-shadow:0 0 0 4px rgba(229,57,95,.15)}
+  .tpl input:checked + .tpl-prev::after{
+    content:"✓";position:absolute;top:6px;right:7px;width:20px;height:20px;border-radius:50%;
+    background:var(--rose);color:#fff;font-size:12px;display:grid;place-items:center;
+  }
+  .tpl input:focus-visible + .tpl-prev{outline:3px solid var(--rose);outline-offset:2px}
+  .tp-emoji{font-size:24px;line-height:1}
+  .tp-title{font-size:13px;line-height:1}
+  .tp-btn{font-size:10px;font-weight:800;padding:3px 12px;border-radius:999px}
+  .tpl-name{display:block;font-size:13.5px;margin-top:7px;text-align:center}
+  .tpl-desc{display:block;font-size:11.5px;font-weight:600;color:var(--muted);text-align:center}
+  .tp-romantica{background:linear-gradient(160deg,#ffe0e8,#fff4ec)}
+  .tp-romantica .tp-title{font-family:"Fraunces",serif;font-style:italic;color:#e5395f}
+  .tp-romantica .tp-btn{background:#e5395f;color:#fff}
+  .tp-fiesta{background:#ffe14d}
+  .tp-fiesta .tp-title{font-family:"Fredoka",sans-serif;font-weight:700;color:#1d1235}
+  .tp-fiesta .tp-btn{background:#7b2ff7;color:#fff;border:2px solid #1d1235;box-shadow:0 2px 0 #1d1235}
+  .tp-elegante{background:radial-gradient(circle at 50% 0%,#24305a,#0b0f1c)}
+  .tp-elegante .tp-title{font-family:"Fraunces",serif;font-style:italic;color:#e9d9a8}
+  .tp-elegante .tp-btn{background:#d4af5f;color:#151b2d}
+
+  /* ---------- Plantilla: Fiesta ---------- */
+  body[data-theme="fiesta"]{
+    --ink:#1d1235;--muted:#5b4b7a;--card:#fff;--rose:#7b2ff7;--rose-d:#5d14d8;--peach:#fff3b0;
+    background:
+      radial-gradient(circle at 15% 20%, #ff7ab6 0 60px, transparent 61px),
+      radial-gradient(circle at 88% 78%, #4dd4ff 0 90px, transparent 91px),
+      radial-gradient(circle at 92% 12%, #7b2ff7 0 34px, transparent 35px),
+      #ffe14d;
+  }
+  body[data-theme="fiesta"] h1,
+  body[data-theme="fiesta"] h2,
+  body[data-theme="fiesta"] .question,
+  body[data-theme="fiesta"] .ticket p{font-family:"Fredoka","Nunito",sans-serif;letter-spacing:0}
+  body[data-theme="fiesta"] em{font-style:normal;color:#ff3d8b}
+  body[data-theme="fiesta"] .card{border:3px solid var(--ink);box-shadow:10px 10px 0 var(--ink);border-radius:24px}
+  body[data-theme="fiesta"] .ticket{border:3px solid var(--ink);border-radius:14px;transform:rotate(-1.5deg)}
+  body[data-theme="fiesta"] .ticket small{color:#ff3d8b}
+  body[data-theme="fiesta"] .yes{border:3px solid var(--ink);box-shadow:0 .16em 0 var(--ink);animation:wiggle 1.8s ease-in-out infinite}
+  @keyframes wiggle{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-4deg)}90%{transform:rotate(4deg)}95%{transform:rotate(-2deg)}}
+  body[data-theme="fiesta"] .no{background:#fff;border:3px solid var(--ink)}
+  body[data-theme="fiesta"] .no.tired{border-width:1.5px}
+  body[data-theme="fiesta"] .envelope{animation:bounce 1.2s ease-in-out infinite}
+  @keyframes bounce{50%{transform:translateY(-10px) rotate(8deg)}}
+  body[data-theme="fiesta"] .floaters span{opacity:.55}
+  body[data-theme="fiesta"] .meter{background:#eee6ff;border:2px solid var(--ink);height:9px}
+  body[data-theme="fiesta"] .meter i{background:linear-gradient(90deg,#ff3d8b,#7b2ff7)}
+  body[data-theme="fiesta"] .primary{border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink)}
+
+  /* ---------- Plantilla: Elegante ---------- */
+  body[data-theme="elegante"]{
+    --ink:#f4ecd8;--muted:#a9a08a;--card:#151b2d;--rose:#d4af5f;--rose-d:#bf9645;--peach:transparent;
+    background:
+      radial-gradient(900px 500px at 50% -10%, #26335f 0%, transparent 65%),
+      #0b0f1c;
+  }
+  body[data-theme="elegante"] h1{font-weight:500;letter-spacing:-.01em}
+  body[data-theme="elegante"] .card{border:1px solid rgba(212,175,95,.45);box-shadow:0 40px 90px -30px #000;border-radius:6px}
+  body[data-theme="elegante"] .card::before{content:"";position:absolute;inset:9px;border:1px solid rgba(212,175,95,.2);border-radius:2px;pointer-events:none}
+  body[data-theme="elegante"] .ticket{border:1px solid rgba(212,175,95,.6);border-radius:2px;outline:1px solid rgba(212,175,95,.2);outline-offset:5px}
+  body[data-theme="elegante"] .ticket small{color:var(--rose);letter-spacing:.3em}
+  body[data-theme="elegante"] .ticket p{font-style:italic}
+  body[data-theme="elegante"] .question{font-style:italic;font-weight:500}
+  body[data-theme="elegante"] .btn{border-radius:3px;letter-spacing:.08em;text-transform:uppercase}
+  body[data-theme="elegante"] .yes{color:#151b2d;background:linear-gradient(180deg,#e6c77d,#c79c46);animation:glow 2.6s ease-in-out infinite;box-shadow:0 .4em 1.4em -.6em rgba(212,175,95,.8)}
+  @keyframes glow{50%{box-shadow:0 .4em 2em -.3em rgba(212,175,95,.9)}}
+  body[data-theme="elegante"] .no{background:#232a40;color:#cfc6b0}
+  body[data-theme="elegante"] .no.tired{background:#1b2134;color:#5d6478}
+  body[data-theme="elegante"] .envelope{animation:none;filter:sepia(.4)}
+  body[data-theme="elegante"] .floaters span{color:#d4af5f;opacity:.3;font-size:16px}
+  body[data-theme="elegante"] .meter{background:#232a40;height:3px}
+  body[data-theme="elegante"] .meter i{background:#d4af5f}
+  body[data-theme="elegante"] .primary{color:#151b2d}
+  body[data-theme="elegante"] .eyebrow{letter-spacing:.3em}
+</style>
+</head>
+<body>
+
+<!-- ===================== CONFIGURACIÓN ===================== -->
+<section class="view" id="config">
+  <div class="card">
+    <p class="eyebrow">Configuración</p>
+    <h1>Arma tu <em>invitación</em></h1>
+    <p class="sub">Llena estos datos. Cuando la persona acepte, te llegará la respuesta por WhatsApp.</p>
+
+    <form id="cfgForm" novalidate>
+      <label id="tplLabel">Plantilla</label>
+      <div class="tpls" role="radiogroup" aria-labelledby="tplLabel">
+        <label class="tpl">
+          <input type="radio" name="tpl" value="romantica" checked>
+          <span class="tpl-prev tp-romantica"><span class="tp-emoji">💌</span><span class="tp-title">Hola…</span><span class="tp-btn">Sí</span></span>
+          <span class="tpl-name">Romántica</span><span class="tpl-desc">Rosa y corazones</span>
+        </label>
+        <label class="tpl">
+          <input type="radio" name="tpl" value="fiesta">
+          <span class="tpl-prev tp-fiesta"><span class="tp-emoji">🎉</span><span class="tp-title">¡Ey!</span><span class="tp-btn">Sí</span></span>
+          <span class="tpl-name">Fiesta</span><span class="tpl-desc">Colores y parche</span>
+        </label>
+        <label class="tpl">
+          <input type="radio" name="tpl" value="elegante">
+          <span class="tpl-prev tp-elegante"><span class="tp-emoji">🥂</span><span class="tp-title">Para ti</span><span class="tp-btn">SÍ</span></span>
+          <span class="tpl-name">Elegante</span><span class="tpl-desc">Noche y dorado</span>
+        </label>
+      </div>
+
+      <label for="fName">Nombre de la persona invitada</label>
+      <input id="fName" maxlength="40" placeholder="Ej. Valentina" autocomplete="off">
+
+      <label for="fPlan">El plan</label>
+      <textarea id="fPlan" maxlength="160" placeholder="Ej. Cine el viernes a las 7 pm y luego helado 🍦"></textarea>
+
+      <label for="fPhone">Tu número de WhatsApp (a donde llega la respuesta)</label>
+      <input id="fPhone" inputmode="tel" maxlength="22" placeholder="Ej. 57 300 123 4567" autocomplete="off">
+      <div class="hint">Incluye el indicativo del país sin el “+” (Colombia = 57).</div>
+
+      <div class="err" id="err"></div>
+
+      <div class="preview" id="preview"><b>Mensaje que recibirás</b><span id="previewText"></span></div>
+
+      <button class="primary" type="button" id="createBtn">Crear enlace de invitación →</button>
+    </form>
+
+    <div class="result" id="result" hidden>
+      <p class="eyebrow">✨ Tu enlace está listo</p>
+      <div class="linkbox">
+        <input id="linkOut" readonly aria-label="Enlace de la invitación">
+        <button type="button" id="copyBtn">Copiar</button>
+      </div>
+      <div class="result-actions">
+        <a class="ghost" id="previewBtn" href="#">👀 Ver invitación</a>
+        <a class="ghost wa-share" id="shareWa" href="#" target="_blank" rel="noopener">Enviarla por WhatsApp</a>
+      </div>
+      <p class="hint" id="resultHint"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== INVITACIÓN ===================== -->
+<section class="view" id="invite">
+  <div class="floaters" aria-hidden="true" id="floaters"></div>
+  <div class="card">
+    <div class="envelope" aria-hidden="true" id="iEmoji">💌</div>
+    <h1 id="iTitle"></h1>
+    <p class="lead" id="iLead"></p>
+    <div class="ticket">
+      <small id="iTicket">El plan</small>
+      <p id="iPlan">—</p>
+    </div>
+    <p class="question" id="iQuestion"></p>
+    <div class="row" id="row">
+      <a class="btn yes" id="yes" href="#" target="_blank" rel="noopener">Sí</a>
+      <button class="btn no" id="no" type="button">No</button>
+    </div>
+    <p class="status" id="status" aria-live="polite"></p>
+    <div class="meter" id="meter"><i id="meterBar"></i></div>
+  </div>
+</section>
+<button class="backpill" id="backEdit" type="button" hidden>← Vista previa · Volver a editar</button>
+
+<!-- ===================== ACEPTÓ ===================== -->
+<section class="view" id="yesView">
+  <div class="card">
+    <div class="big-emoji" id="yEmoji">🥳</div>
+    <h1 id="yTitle"></h1>
+    <p id="yesSub" class="muted"></p>
+    <a class="btn wa" id="waBtn" href="#" target="_blank" rel="noopener">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3Z"/></svg>
+      Enviar mi respuesta por WhatsApp
+    </a>
+    <p class="small">Si WhatsApp no se abrió solo, toca el botón verde.<br>La respuesta va al número <span id="waNum"></span>.</p>
+  </div>
+</section>
+
+<!-- ===================== RECHAZÓ ===================== -->
+<section class="view" id="noView">
+  <div class="rain" id="rain" aria-hidden="true"></div>
+  <div class="card">
+    <div class="sadface" aria-hidden="true">🥲<span class="tear"></span></div>
+    <h1>Oh… está bien.</h1>
+    <p class="muted" id="noSub"></p>
+    <div class="reason"><small>Motivo oficial del rechazo</small><span id="reasonText"></span></div>
+    <p class="muted" id="noTail" style="font-size:14.5px"></p>
+    <button class="regret" id="regret" type="button">Espera… lo pensé mejor: ¡sí voy! 🙈</button>
+  </div>
+</section>
+
+<canvas id="confetti"></canvas>
+
+<script>
+(function(){
+  "use strict";
+  const MAX = 100;
+  const $ = id => document.getElementById(id);
+  const views = ["config","invite","yesView","noView"];
+  let cfg = null;           // {n: nombre, p: plan, t: teléfono}
+  let attempts = 0;
+  let regretted = false;
+  let lastDodge = 0;
+  let pointer = {x:-999,y:-999};
+  let previewMode = false;   // la persona que configura está viendo la vista previa
+  let lastCreated = null;    // última invitación generada (para mostrar el enlace al volver)
+
+  /* ---------- utilidades ---------- */
+  const store = {
+    get(){ try{ return JSON.parse(localStorage.getItem("invite-cfg")||"null"); }catch(e){ return null; } },
+    set(v){ try{ localStorage.setItem("invite-cfg", JSON.stringify(v)); }catch(e){} }
+  };
+  function encode(obj){
+    const bytes = new TextEncoder().encode(JSON.stringify(obj));
+    return "i-" + Array.from(bytes, b => b.toString(16).padStart(2,"0")).join("");
+  }
+  function decode(h){
+    try{
+      const hex = h.slice(2);
+      if(!/^[0-9a-f]+$/.test(hex) || hex.length % 2) return null;
+      const bytes = new Uint8Array(hex.match(/../g).map(x => parseInt(x,16)));
+      const o = JSON.parse(new TextDecoder().decode(bytes));
+      if(!o || !o.n || !o.p || !o.t) return null;
+      if(!TEMPLATES[o.s]) o.s = "romantica";
+      return o;
+    }catch(e){ return null; }
+  }
+  const digits = s => (s||"").replace(/\D/g,"");
+
+  /* ---------- plantillas ---------- */
+  const NAME = {};
+  const TEMPLATES = {
+    romantica: {
+      emoji:"💌", title:["Hola, ", NAME, ""], lead:"Tengo una pregunta muy, muy importante…",
+      ticket:"El plan", question:"¿Aceptas la invitación?", floaters:["💗","✨","💌","🌷","💕"],
+      yesEmoji:"🥳", yesTitle:["¡Sabía que dirías que ", "sí", "!"]
+    },
+    fiesta: {
+      emoji:"🎉", title:["¡Ey, ", NAME, "!"], lead:"Se viene un parche épico y no puede pasar sin ti…",
+      ticket:"El parche", question:"¿Te apuntas?", floaters:["🎈","🎊","⭐","🪩","🍕"],
+      yesEmoji:"🕺", yesTitle:["¡Esooo! ", "Nos vamos", " 🎊"]
+    },
+    elegante: {
+      emoji:"🥂", title:["Para ", NAME, ""], lead:"Me harías el honor de acompañarme a algo especial.",
+      ticket:"La invitación", question:"¿Me concedes el honor?", floaters:["✦","✧","⋆","✦","✧"],
+      yesEmoji:"🥂", yesTitle:["Será un ", "placer", "."]
+    }
+  };
+  const tpl = () => TEMPLATES[cfg && cfg.s] || TEMPLATES.romantica;
+  function renderTitle(el, parts){
+    el.textContent = "";
+    parts.forEach((p, i) => {
+      if(i === 1){
+        const em = document.createElement("em");
+        em.textContent = p === NAME ? cfg.n : p;
+        el.appendChild(em);
+      }else el.appendChild(document.createTextNode(p));
+    });
+  }
+
+  function show(id){
+    views.forEach(v => $(v).classList.toggle("on", v === id));
+    document.body.classList.toggle("sad", id === "noView");
+    const themed = (id === "invite" || id === "yesView") && cfg && cfg.s && cfg.s !== "romantica";
+    if(themed) document.body.dataset.theme = cfg.s; else delete document.body.dataset.theme;
+    window.scrollTo(0,0);
+  }
+  function message(){
+    let m = `¡Hola! Soy ${cfg.n} y ACEPTO la invitación 🎉\nEl plan: ${cfg.p}`;
+    if(regretted) m += `\n\n(Primero dije que no, pero me arrepentí 🙈)`;
+    else if(attempts > 0) m += `\n\n(Confieso que intenté decir que no ${attempts} ${attempts===1?"vez":"veces"}, pero el botón no me dejó 😅)`;
+    return m;
+  }
+  const waLink = () => `https://wa.me/${digits(cfg.t)}?text=${encodeURIComponent(message())}`;
+
+  /* ---------- configuración ---------- */
+  function fillForm(o){
+    $("fName").value = o ? o.n : "";
+    $("fPlan").value = o ? o.p : "";
+    $("fPhone").value = o ? o.t : "";
+    const s = (o && TEMPLATES[o.s]) ? o.s : "romantica";
+    document.querySelector(`input[name="tpl"][value="${s}"]`).checked = true;
+    updatePreview();
+  }
+  function updatePreview(){
+    const n = $("fName").value.trim() || "[nombre]";
+    const p = $("fPlan").value.trim() || "[el plan]";
+    $("previewText").textContent = `¡Hola! Soy ${n} y ACEPTO la invitación 🎉\nEl plan: ${p}`;
+  }
+  function invalidate(){ updatePreview(); $("err").textContent = ""; $("result").hidden = true; lastCreated = null; }
+  ["fName","fPlan","fPhone"].forEach(id => $(id).addEventListener("input", invalidate));
+  document.querySelectorAll('input[name="tpl"]').forEach(r => r.addEventListener("change", invalidate));
+
+  const linkFor = o => location.href.split("#")[0] + "#" + encode(o);
+  function showResult(o){
+    const link = linkFor(o);
+    $("linkOut").value = link;
+    $("previewBtn").href = "#" + encode(o);
+    $("shareWa").href = "https://wa.me/?text=" + encodeURIComponent(`${o.n}, tengo algo que preguntarte 💌\n${link}`);
+    $("resultHint").textContent = `Mándale este enlace a ${o.n}. Al abrirlo verá directamente la invitación. Si cambias algo, crea el enlace de nuevo.`;
+    $("copyBtn").textContent = "Copiar"; $("copyBtn").classList.remove("ok");
+    $("result").hidden = false;
+  }
+  $("copyBtn").addEventListener("click", async () => {
+    const inp = $("linkOut");
+    let ok = false;
+    try{ await navigator.clipboard.writeText(inp.value); ok = true; }
+    catch(e){
+      try{ inp.focus(); inp.select(); ok = document.execCommand("copy"); }catch(_){}
+    }
+    $("copyBtn").textContent = ok ? "¡Copiado!" : "Selecciónalo";
+    $("copyBtn").classList.toggle("ok", ok);
+    if(!ok){ inp.focus(); inp.select(); }
+  });
+  $("linkOut").addEventListener("focus", e => e.target.select());
+  $("previewBtn").addEventListener("click", () => { previewMode = true; });
+  $("backEdit").addEventListener("click", () => { previewMode = false; location.hash = "editar"; });
+
+  // Sin depender del "submit" del formulario: en algunos marcos (iframes) está bloqueado.
+  $("cfgForm").addEventListener("submit", e => { e.preventDefault(); createLink(); });
+  $("createBtn").addEventListener("click", createLink);
+  ["fName","fPhone"].forEach(id => $(id).addEventListener("keydown", e => {
+    if(e.key === "Enter"){ e.preventDefault(); createLink(); }
+  }));
+  function createLink(){
+    const n = $("fName").value.trim(), p = $("fPlan").value.trim(), t = digits($("fPhone").value);
+    if(!n) return fail("Escribe el nombre de la persona invitada.", "fName");
+    if(!p) return fail("Cuéntale cuál es el plan.", "fPlan");
+    if(t.length < 8 || t.length > 15) return fail("Revisa el número: debe llevar indicativo de país y solo números (ej. 573001234567).", "fPhone");
+    const s = (document.querySelector('input[name="tpl"]:checked') || {}).value || "romantica";
+    const o = {n, p, t, s};
+    store.set(o);
+    lastCreated = o;
+    showResult(o);
+    try{ $("result").scrollIntoView({behavior:"smooth", block:"center"}); }catch(e){}
+  }
+  function fail(msg, id){
+    $("err").textContent = msg;
+    $(id).focus();
+    try{ $(id).scrollIntoView({behavior:"smooth", block:"center"}); }catch(e){}
+  }
+
+  /* ---------- invitación ---------- */
+  const lines = [
+    "¿Lo pensaste bien?","Uy, se me resbaló 🙃","Casi…","Inténtalo otra vez 😏","Nop.",
+    "Ese botón es tímido","Mira qué bonito está el Sí 👀","¿Y si mejor no?","Ni modo, se movió",
+    "El Sí está creciendo de la emoción","Respira. Piénsalo.","El No está cansado de huir",
+    "Esto es una señal 🔮","Tu dedo dice no, tu corazón dice sí","Sigue así y el Sí no va a caber",
+    "El universo está conspirando","¿Qué tal si le das al grande?","Error 404: No no encontrado",
+    "Admiro tu terquedad","El No pidió vacaciones","¡Fallaste! Qué pesar 🤭"
+  ];
+  const milestones = {
+    1:"¿Lo pensaste bien? 🤨", 10:"El Sí ya está creciendo 👀", 25:"¿Todo bien en casa?",
+    50:"Admiro tu terquedad 😤", 75:"El No está sudando 💦",
+    90:"¿De verdad vale la pena?", 99:"El No ya casi no puede más… Piénsalo."
+  };
+
+  function setupInvite(){
+    attempts = 0; regretted = false;
+    const T = tpl();
+    $("iEmoji").textContent = T.emoji;
+    renderTitle($("iTitle"), T.title);
+    $("iLead").textContent = T.lead;
+    $("iTicket").textContent = T.ticket;
+    $("iQuestion").textContent = T.question;
+    $("iPlan").textContent = cfg.p;
+    const no = $("no");
+    no.className = "btn no";
+    no.removeAttribute("style");
+    $("row").appendChild(no);
+    $("yes").removeAttribute("style");
+    $("status").textContent = "";
+    $("meter").classList.remove("on");
+    $("meterBar").style.width = "0";
+    $("yes").href = waLink();
+    document.title = `Invitación para ${cfg.n}`;
+    makeFloaters();
+  }
+
+  function growYes(){
+    const px = 20 + attempts * 0.48;          // 20px → 68px
+    $("yes").style.fontSize = `min(${px}px, ${Math.max(6, px/4.2)}vw)`;
+  }
+  function shrinkNo(){
+    const no = $("no");
+    const f = attempts / MAX;
+    no.style.fontSize = (18 - f*10).toFixed(2) + "px";       // 18px → 8px
+    no.style.opacity = (1 - f*0.55).toFixed(2);              // 1 → .45
+    const pad = attempts >= MAX ? ".25em .55em" : `${(.55 - f*.3).toFixed(2)}em ${(1.6 - f*1).toFixed(2)}em`;
+    no.style.padding = pad;
+  }
+  function placeNo(){
+    const no = $("no");
+    if(!no.classList.contains("flying")){
+      const r = no.getBoundingClientRect();
+      no.style.left = r.left + "px"; no.style.top = r.top + "px";
+      no.classList.add("flying");
+      document.body.appendChild(no);
+      void no.offsetWidth;
+    }
+    const w = no.offsetWidth, h = no.offsetHeight, m = 14;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const y = $("yes").getBoundingClientRect();
+    let best = null;
+    for(let i=0;i<60;i++){
+      const x = m + Math.random() * Math.max(1, vw - w - 2*m);
+      const t = m + Math.random() * Math.max(1, vh - h - 2*m);
+      const hitsYes = x < y.right + 24 && x + w > y.left - 24 && t < y.bottom + 24 && t + h > y.top - 24;
+      const dx = (x + w/2) - pointer.x, dy = (t + h/2) - pointer.y;
+      const nearPointer = Math.hypot(dx, dy) < 130;
+      best = {x, t};
+      if(!hitsYes && !nearPointer) break;
+    }
+    no.style.left = best.x + "px"; no.style.top = best.t + "px";
+  }
+
+  function dodge(e){
+    if(attempts >= MAX) return;
+    const now = Date.now();
+    if(now - lastDodge < 140) return;
+    lastDodge = now;
+    if(e && e.clientX != null){ pointer = {x:e.clientX, y:e.clientY}; }
+    attempts++;
+    growYes(); shrinkNo(); placeNo();
+    $("yes").href = waLink();
+    $("meter").classList.add("on");
+    $("meterBar").style.width = (attempts / MAX * 100) + "%";
+    if(attempts >= MAX){
+      $("no").classList.add("tired");
+      $("status").textContent = "Bueno… el No se rindió. Está por ahí, chiquitico. Si de verdad quieres, búscalo. 🥺";
+    }else{
+      $("status").textContent = milestones[attempts] || lines[Math.floor(Math.random()*lines.length)];
+    }
+  }
+
+  const no = $("no");
+  no.addEventListener("pointerenter", e => { if(e.pointerType === "mouse") dodge(e); });
+  no.addEventListener("pointerdown", e => { if(attempts < MAX){ e.preventDefault(); dodge(e); } });
+  no.addEventListener("click", e => {
+    e.preventDefault();
+    if(attempts < MAX){ dodge(null); return; }
+    reject();
+  });
+  document.addEventListener("pointermove", e => { pointer = {x:e.clientX, y:e.clientY}; }, {passive:true});
+  window.addEventListener("resize", () => { if(no.classList.contains("flying") && $("invite").classList.contains("on")) placeNo(); });
+
+  $("yes").addEventListener("click", e => {
+    // evita que un toque que movió el "No" termine activando el "Sí"
+    if(Date.now() - lastDodge < 450){ e.preventDefault(); return; }
+    $("yes").href = waLink();
+    accept();
+  });
+
+  /* ---------- aceptar ---------- */
+  function accept(){
+    if(no.classList.contains("flying")) no.style.display = "none";
+    $("waBtn").href = waLink();
+    $("waNum").textContent = "+" + digits(cfg.t);
+    $("yEmoji").textContent = tpl().yesEmoji;
+    renderTitle($("yTitle"), tpl().yesTitle);
+    $("yesSub").textContent = regretted
+      ? "Buena decisión. El plan te estaba esperando 💖"
+      : attempts >= 30 ? `Después de ${attempts} intentos, el corazón ganó 💖`
+      : attempts > 0 ? "Ese botón del No nunca tuvo oportunidad 💖"
+      : "¡A la primera! Así me gusta 💖";
+    show("yesView");
+    confetti();
+  }
+
+  /* ---------- rechazar ---------- */
+  const reasons = [
+    "Tengo una cita importante con mi cobija y no la puedo dejar plantada.",
+    "Mi planta y yo estamos pasando por un momento difícil. Me necesita.",
+    "Ya había quedado de mirar el techo un rato. Es un compromiso de hace años.",
+    "Mi horóscopo dijo que no saliera, y el horóscopo nunca me falla (bueno, sí, pero igual).",
+    "Tengo que contar los granos de arroz de la despensa. Alguien tiene que hacerlo.",
+    "El sofá ya había comprado crispetas. Sería una grosería dejarlo.",
+    "Estoy ahorrando para algo muy importante: no gastar.",
+    "Mi wifi y yo nos acabamos de reconciliar y no quiero arruinarlo.",
+    "Mi pez dorado me miró raro cuando le conté. No quiero problemas en casa.",
+    "Necesito ese día para extrañar cosas que nunca pasaron.",
+    "Tengo que practicar mi cara de “no fui yo” frente al espejo.",
+    "Mercurio está retrógrado y yo, por solidaridad, también."
+  ];
+  function reject(){
+    no.style.display = "none";
+    $("noSub").textContent = `${cfg.n}, buscaste el botón chiquito durante ${attempts} intentos solo para esto…`;
+    $("reasonText").textContent = reasons[Math.floor(Math.random()*reasons.length)];
+    $("noTail").textContent = `El plan («${cfg.p}») se quedó en un rincón, tomando agüita. Está bien. Está bien. 💧`;
+    makeRain();
+    show("noView");
+  }
+  $("regret").addEventListener("click", () => { regretted = true; accept(); });
+
+  /* ---------- decoración ---------- */
+  function makeFloaters(){
+    const box = $("floaters"); box.innerHTML = "";
+    const set = tpl().floaters;
+    for(let i=0;i<10;i++){
+      const s = document.createElement("span");
+      s.textContent = set[i % set.length];
+      s.style.left = (Math.random()*100) + "vw";
+      s.style.top = "100vh";
+      s.style.animationDelay = (-Math.random()*14) + "s";
+      s.style.animationDuration = (11 + Math.random()*8) + "s";
+      box.appendChild(s);
+    }
+  }
+  function makeRain(){
+    const box = $("rain"); box.innerHTML = "";
+    for(let i=0;i<50;i++){
+      const d = document.createElement("i");
+      d.style.left = (Math.random()*100) + "vw";
+      d.style.animationDuration = (0.7 + Math.random()*0.7) + "s";
+      d.style.animationDelay = (-Math.random()*2) + "s";
+      box.appendChild(d);
+    }
+  }
+  function confetti(){
+    const c = $("confetti"), ctx = c.getContext("2d");
+    const dpr = window.devicePixelRatio || 1;
+    c.width = innerWidth * dpr; c.height = innerHeight * dpr; ctx.scale(dpr, dpr);
+    const colors = ["#e5395f","#ffb199","#ffd166","#1fa855","#7aa7ff","#ff8fab"];
+    const parts = Array.from({length:170}, () => ({
+      x: innerWidth/2 + (Math.random()-.5)*120, y: innerHeight*0.35,
+      vx: (Math.random()-.5)*14, vy: -Math.random()*14 - 4,
+      r: Math.random()*Math.PI, vr: (Math.random()-.5)*.3,
+      w: 6 + Math.random()*6, h: 8 + Math.random()*8, col: colors[Math.floor(Math.random()*colors.length)]
+    }));
+    const t0 = performance.now();
+    (function frame(t){
+      ctx.clearRect(0,0,innerWidth,innerHeight);
+      parts.forEach(p => {
+        p.vy += .32; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+        ctx.fillStyle = p.col; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+      });
+      if(t - t0 < 4500) requestAnimationFrame(frame); else ctx.clearRect(0,0,innerWidth,innerHeight);
+    })(t0);
+  }
+
+  /* ---------- navegación ---------- */
+  function route(){
+    const h = location.hash.slice(1);
+    no.style.display = "";
+    if(h.startsWith("i-")){
+      const o = decode(h);
+      if(o){
+        cfg = o;
+        setupInvite();
+        show("invite");
+        $("backEdit").hidden = !previewMode;
+        return;
+      }
+    }
+    previewMode = false;
+    $("backEdit").hidden = true;
+    if(no.classList.contains("flying")){ no.classList.remove("flying"); $("row").appendChild(no); }
+    const saved = lastCreated || cfg || store.get();
+    fillForm(saved);
+    if(lastCreated) showResult(lastCreated); else $("result").hidden = true;
+    show("config");
+  }
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>
+</body>
+</html>
